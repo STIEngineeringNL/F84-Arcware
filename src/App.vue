@@ -19,6 +19,7 @@
         class="top-bar"
         :class="{ fullscreen: isFullscreen }"
         :initQuality="quality"
+        :quality="availableQuality"
         @fullscreenChange="fullscreenToggle"
         @audioChange="audioToggle"
         @qualityChange="qualityToggle"
@@ -34,7 +35,7 @@
       />
       <!-- <img class="bg" src="./assets/bg.png" /> -->
       <video ref="videoRef"></video>
-      <audio ref="audioRef"></audio>
+      <audio id="audioRef"></audio>
     </div>
   </div>
 </template>
@@ -45,7 +46,7 @@ import { WebRTCClient } from '@arcware/webrtc-plugin'
 import ControlBar from '@/components/ControlBar.vue'
 import TopBar from '@/components/TopBar.vue'
 import { debounce } from 'lodash'
-import isMobile from 'ismobilejs';
+import isMobile from 'ismobilejs'
 
 const sizeContainerRef = ref<HTMLDivElement>()
 const videoContainerRef = ref<HTMLDivElement>()
@@ -60,7 +61,24 @@ const RTCClient = ref<WebRTCClient>(null)
 const shareId = computed(() => {
   const urlParams = new URLSearchParams(window.location.search)
   const id = urlParams.get('id')
-  return id
+
+  if (id) {
+    return id
+  }
+
+  if (window.innerWidth * window.devicePixelRatio <= 1920) {
+    return 'share-cecb82b6-05a5-4b9d-8bc1-a2f6f0dd62d9'
+  } else {
+    return 'share-6394a78c-e743-43a0-a358-e04b8c9ef53d'
+  }
+})
+
+const availableQuality = computed(() => {
+  if (window.innerWidth * window.devicePixelRatio <= 1920) {
+    return ['auto', '720p', '1080p']
+  } else {
+    return ['auto', '720p', '1080p', '1440p', '2160p']
+  }
 })
 
 const quality = computed(() => {
@@ -104,6 +122,7 @@ function fullscreenToggle(e: boolean) {
 
 function audioToggle(e: boolean) {
   audioRef.value!.muted = e
+  
 }
 
 function qualityToggle(e = 'auto') {
@@ -165,10 +184,10 @@ onMounted(() => {
       /* object with settings */
     },
     playOverlay: false,
-    autoplay: {
-      video: true,
-      audio: true
-    },
+    autoplay: { 
+    video: true, 
+    audio: true,
+},
     sendResolutionOnResize: false,
     loader: (status: boolean) => {
       /* handle loader */
@@ -181,7 +200,7 @@ onMounted(() => {
       console.log('response', response)
     },
     videoInitializeCallback: (descriptor: any) => {
-       handleSendCommands({ is_mobile: isMobile().any, is_landscape: isLandscape.value })
+      handleSendCommands({ is_mobile: isMobile().any, is_landscape: isLandscape.value })
 
       window.addEventListener(
         'orientationchange',

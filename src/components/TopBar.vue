@@ -6,10 +6,10 @@
         <div v-if="qualityMenuStatus" class="sub-menu styles-menu">
           <Button
             v-for="q in quality"
-            :key="q.id"
+            :key="q"
             class="action-button"
-            @click="setQuality(q.id)"
-            >{{ q.title }}</Button
+            @click="setQuality(q)"
+            >{{ q }}</Button
           >
         </div>
       </Transition>
@@ -34,6 +34,7 @@ import Button from './Button.vue'
 const props = withDefaults(
   defineProps<{
     initQuality?: string
+    quality: string[]
   }>(),
   {
     initQuality: 'auto'
@@ -44,14 +45,6 @@ const fullscreen = ref(false)
 const audio = ref(true)
 const activeQuality = ref(props.initQuality)
 const qualityMenuStatus = ref(false)
-
-const quality = ref([
-  { id: 'auto', title: 'Auto' },
-  { id: '720p', title: '720p' },
-  { id: '1080p', title: '1080p' },
-  { id: '1440p', title: '1440p' },
-  { id: '2160p', title: '2160p' }
-])
 
 const emit = defineEmits<{
   (e: 'fullscreenChange', value: boolean): void
