@@ -12,7 +12,7 @@
     "format": "prettier --write src/"
   },
   "dependencies": {
-    "@arcware/webrtc-plugin": "^0.3.10",
+    "@arcware/webrtc-plugin": "^0.3.14",
     "@types/lodash": "^4.14.195",
     "ismobilejs": "^1.1.1",
     "lodash": "^4.17.21",
