@@ -35,7 +35,7 @@
       />
       <!-- <img class="bg" src="./assets/bg.png" /> -->
       <video ref="videoRef"></video>
-      <audio id="audioRef"></audio>
+      <audio ref="audioRef"></audio>
     </div>
   </div>
 </template>
@@ -52,6 +52,7 @@ const sizeContainerRef = ref<HTMLDivElement>()
 const videoContainerRef = ref<HTMLDivElement>()
 const videoRef = ref<HTMLVideoElement>()
 const audioRef = ref<HTMLAudioElement>()
+// const audioPlayed = ref(false)
 const loadingRef = ref(null)
 const isLoading = ref(true)
 const isFullscreen = ref(false)
@@ -121,8 +122,7 @@ function fullscreenToggle(e: boolean) {
 }
 
 function audioToggle(e: boolean) {
-  audioRef.value!.muted = e
-  
+  audioRef.value.muted = !e
 }
 
 function qualityToggle(e = 'auto') {
@@ -172,6 +172,11 @@ const isLandscape = computed(() => {
   return window.innerHeight < window.innerWidth
 })
 
+function playAudio() {
+  if (audioRef.value.paused) {
+    audioRef.value.play()
+  }
+}
 onMounted(() => {
   console.log('loading...')
 
@@ -184,10 +189,10 @@ onMounted(() => {
       /* object with settings */
     },
     playOverlay: false,
-    autoplay: { 
-    video: true, 
-    audio: true,
-},
+    autoplay: {
+      video: true,
+      audio: true
+    },
     sendResolutionOnResize: false,
     loader: (status: boolean) => {
       /* handle loader */
@@ -226,6 +231,11 @@ onMounted(() => {
   })
 
   window.addEventListener('resize', debounce(qualityToggle, 500))
+
+  document.addEventListener('onMouseOver', playAudio)
+  document.addEventListener('keydown', playAudio)
+  document.addEventListener('click', playAudio)
+  document.addEventListener('touchstart', playAudio)
 })
 </script>
 
